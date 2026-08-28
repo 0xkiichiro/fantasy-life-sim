@@ -1,4 +1,5 @@
-import { Item, ItemTemplate } from "./objects/Item";
+import { Item } from "./objects/Item";
+import type { ItemTemplate } from "./objects/ItemTemplate";
 
 const templates: ItemTemplate[] = [
   {
@@ -6,6 +7,7 @@ const templates: ItemTemplate[] = [
     statBonus: { strength: 2 },
     diceBonus: 1,
     rarity: "legendary",
+    value: 400,
     description: "A blade with an edge that hasn't dulled in centuries.",
   },
 ];

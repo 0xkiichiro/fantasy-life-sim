@@ -8,6 +8,12 @@ This is the first of two planned prototypes. A second, tonally distinct game —
 
 Full game design is in `fantasy-life-sim-design-doc.md` at the repo root — read that for gameplay rules (resource pools, relationship thresholds, dice mechanics, death system, etc.) before making design changes.
 
+**Money is anchored to a documented scale in `docs/economy.md`.** Read it before writing
+any gold value — an event reward, an item price, a story cost. It is a pricing reference,
+not a mechanic: nothing is deducted automatically and there is no yearly upkeep. The core
+rule is that wealth follows *station*, and a family's wealth must match what their child
+could earn in that same station.
+
 ## Hard rules for this codebase
 
 These were established deliberately across a long design conversation. Follow them without re-litigating unless the user explicitly asks to change them.
@@ -69,6 +75,7 @@ src/
                                 different game later
     objects/                     Item, ItemTemplate, ItemRarity,
                                 FamilyBackground, FamilyBackgroundTemplate,
+                                (Item split into one file per entity)
                                 CharacterClass, CharacterClassTemplate,
                                 DungeonEncounter, DungeonEncounterTemplate,
                                 EffectTarget, RawFlavorEntry
@@ -96,6 +103,10 @@ src/
     objects/                     IconName
     theme.ts                     colour tokens + CLASS_COLORS
     styles.css                   all layout/material/bevel styling (see UI section)
+
+docs/
+  economy.md                    the gold scale: household spending, housing, income by
+                                station, item values, and the rules for new content
 
 tools/
   generate-textures.py          bakes the tileable material PNGs into public/textures
@@ -216,7 +227,7 @@ is what makes missing parents and variable siblings render correctly.
 - **`DungeonEncounter` is defined but unused.** Dungeons are still resolved as inline prose in `scripted.ts` (the "ogre-kin" fight is hardcoded, not built from a template). The class exists so the *next* dungeon can be built from a template instead of copy-pasting more hardcoded prose — that's the natural next thing to build if adding more dungeon content.
 - **No automated tests.** `diceEngine`, `eventEngine`, and `deathSystem` are pure functions with no UI dependency — best candidates to test first.
 - **Death legacy system is an explicit v2/stretch goal**, not v1 scope: on death, the player would get a choice (write a book, hide a legendary item, send an inspiration letter) that seeds a new event into a *future* playthrough. `deathSystem.ts` was structured so this is a single extension point later. Do not build this unless asked — it was explicitly deferred.
-- **Items/gear beyond the single "Ashen Blade" example are unbuilt.** The `Item` factory pattern is proven out with one example; a real item roster doesn't exist yet.
+- **Items/gear beyond the single "Ashen Blade" example are unbuilt.** The `Item` factory pattern is proven out with one example; a real item roster doesn't exist yet. `ItemTemplate.value` now carries a gold worth, priced against `docs/economy.md`, but nothing is purchasable — there is no shop and no merchant event, so gold still has almost no sink beyond the dowry and the family-support beat.
 - **Locations & travel, and the minimap that goes with them.** Planned, not built. The
   intent: the character can travel between named locations (home village, nearby town,
   wilderness, dungeon sites), and where they are gates which events are eligible. When
