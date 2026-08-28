@@ -1,42 +1,43 @@
 import React from "react";
-import { Users } from "lucide-react";
+import { Icon } from "./Icon";
 import { COLORS } from "../theme";
 import { StatBar } from "./StatBar";
+import { Frame } from "./Frame";
 import type { Character } from "../../engine/shared/objects/Character";
 
 export function RelationshipPanel({ character }: { character: Character }) {
   const loveMet = !!character.getFlag("loveMet");
   const married = !!character.getFlag("married");
 
+  const bonds: Array<{ label: string; id: string; color: string }> = [
+    { label: "Mother", id: "mother", color: COLORS.moss },
+    { label: "Father", id: "father", color: COLORS.moss },
+    { label: "Friend", id: "friend", color: COLORS.gold },
+  ];
+
+  if (loveMet) {
+    bonds.push({
+      label: married ? "Spouse" : "Love Interest",
+      id: "love",
+      color: COLORS.oxblood,
+    });
+  }
+
   return (
-    <div style={{ background: "#ffffff44", border: `1px solid ${COLORS.leather}33`, borderRadius: 4, padding: 14, marginTop: 14 }}>
-      <div
-        style={{
-          fontFamily: "'Cinzel', serif",
-          fontSize: 11,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: COLORS.leather,
-          marginBottom: 8,
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-        }}
-      >
-        <Users size={13} /> Relationships
+    <Frame className="mt">
+      <div className="panel-title caps">
+        <Icon name="threeFriends" size={18} /> Bonds
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "4px 20px" }}>
-        <StatBar label="Mother" value={character.relationshipScore("mother")} color={COLORS.moss} />
-        <StatBar label="Father" value={character.relationshipScore("father")} color={COLORS.moss} />
-        <StatBar label="Friend" value={character.relationshipScore("friend")} color={COLORS.gold} />
-        {loveMet && (
-          <StatBar
-            label={married ? "Spouse" : "Love Interest"}
-            value={character.relationshipScore("love")}
-            color={COLORS.oxblood}
-          />
-        )}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0 20px" }}>
+        {bonds.map((bond) => (
+          <div className="rel" key={bond.id}>
+            <div className="rel-portrait" />
+            <div className="rel-body">
+              <StatBar label={bond.label} value={character.relationshipScore(bond.id)} color={bond.color} />
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </Frame>
   );
 }
