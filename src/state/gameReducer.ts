@@ -7,26 +7,14 @@ import { GameEvent, resolveOptions } from "../engine/eventEngine/objects/GameEve
 import { EventOption } from "../engine/eventEngine/objects/EventOption";
 import { createCharacter } from "../engine/characterEngine/characterEngine";
 import { FANTASY_CHARACTER_TEMPLATE } from "../content/characterTemplate";
-
-export interface GameState {
-  character: Character;
-  pools: PoolSet;
-  pendingEvents: GameEvent[];
-  activeEvent: GameEvent | null;
-  log: string[];
-  seenOnce: Set<string>;
-  gameOver: boolean;
-}
-
-export type GameAction =
-  | { type: "AGE_UP" }
-  | { type: "RESOLVE_OPTION"; option: EventOption }
-  | { type: "SKIP_EVENT" }
-  | { type: "RESTART" };
+import type { GameState } from "./objects/GameState";
+import type { GameAction } from "./objects/GameAction";
 
 function freshState(): GameState {
   const character = createCharacter(FANTASY_CHARACTER_TEMPLATE);
   return {
+    screen: "menu",
+    inProgress: false,
     character,
     pools: new PoolSet(new ResourcePool("social", 0), new ResourcePool("proficiency", 0)),
     pendingEvents: [],
@@ -43,8 +31,20 @@ function pushLog(log: string[], entry: string): string[] {
 
 export function gameReducer(state: GameState, action: GameAction, registry: EventRegistry): GameState {
   switch (action.type) {
-    case "RESTART":
-      return freshState();
+    case "OPEN_MENU":
+      return { ...state, screen: "menu" };
+
+    case "OPEN_HOW_TO_PLAY":
+      return { ...state, screen: "howToPlay" };
+
+    case "NEW_GAME":
+      return { ...freshState(), screen: "preview" };
+
+    case "BEGIN":
+      return { ...state, screen: "playing", inProgress: true };
+
+    case "RESUME":
+      return { ...state, screen: "playing" };
 
     case "AGE_UP": {
       if (state.gameOver) return state;
@@ -150,3 +150,4 @@ export function currentOptionsFor(event: GameEvent, character: Character): Event
 }
 
 export { freshState };
+export type { GameState, GameAction };

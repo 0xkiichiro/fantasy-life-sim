@@ -8,8 +8,12 @@ import { Frame } from "./components/Frame";
 import { EventCard, DeathCard } from "./components/EventCard";
 import { RelationshipPanel } from "./components/RelationshipPanel";
 import { HeroPortrait } from "./components/HeroPortrait";
+import { MainMenu } from "./components/MainMenu";
+import { HowToPlay } from "./components/HowToPlay";
+import { CharacterPreview } from "./components/CharacterPreview";
 import { gameReducer, freshState, currentOptionsFor } from "../state/gameReducer";
-import type { GameState, GameAction } from "../state/gameReducer";
+import type { GameState } from "../state/objects/GameState";
+import type { GameAction } from "../state/objects/GameAction";
 import { loadEventRegistry } from "../content/contentLoader";
 import type { EventOption } from "../engine/eventEngine/objects/EventOption";
 import "./styles.css";
@@ -37,7 +41,7 @@ export default function App() {
     freshState
   );
 
-  const { character, pools, activeEvent, pendingEvents, log } = state;
+  const { screen, inProgress, character, pools, activeEvent, pendingEvents, log } = state;
   const level = character.level;
   const classIcon: IconName = character.className ? CLASS_ICONS[character.className] : "roundShield";
   const classColor = character.className ? CLASS_COLORS[character.className] : COLORS.gold;
@@ -46,6 +50,32 @@ export default function App() {
     () => (activeEvent ? currentOptionsFor(activeEvent, character) : []),
     [activeEvent, character]
   );
+
+  if (screen === "menu") {
+    return (
+      <MainMenu
+        inProgress={inProgress}
+        onResume={() => dispatch({ type: "RESUME" })}
+        onNewGame={() => dispatch({ type: "NEW_GAME" })}
+        onHowToPlay={() => dispatch({ type: "OPEN_HOW_TO_PLAY" })}
+      />
+    );
+  }
+
+  if (screen === "howToPlay") {
+    return <HowToPlay onBack={() => dispatch({ type: "OPEN_MENU" })} />;
+  }
+
+  if (screen === "preview") {
+    return (
+      <CharacterPreview
+        character={character}
+        onReroll={() => dispatch({ type: "NEW_GAME" })}
+        onBegin={() => dispatch({ type: "BEGIN" })}
+        onBack={() => dispatch({ type: "OPEN_MENU" })}
+      />
+    );
+  }
 
   return (
     <div className="app">
@@ -58,7 +88,12 @@ export default function App() {
           <HeroPortrait className={character.className} />
         </div>
         <div className="hero-meta">
-          <div className="caps hero-kicker">A Life, Told in Chapters</div>
+          <div className="hero-topline">
+            <span className="caps hero-kicker">A Life, Told in Chapters</span>
+            <button className="menu-tab caps" onClick={() => dispatch({ type: "OPEN_MENU" })}>
+              Menu
+            </button>
+          </div>
           <h1 className="hero-name">{character.name}</h1>
           <div className="hero-line">
             <span>Age {character.age}</span>
@@ -105,7 +140,7 @@ export default function App() {
 
       <Frame material={!character.alive || activeEvent ? "parchment" : "oak"}>
         {!character.alive ? (
-          <DeathCard character={character} level={level} onRestart={() => dispatch({ type: "RESTART" })} />
+          <DeathCard character={character} level={level} onRestart={() => dispatch({ type: "NEW_GAME" })} />
         ) : activeEvent ? (
           <EventCard
             event={activeEvent}
