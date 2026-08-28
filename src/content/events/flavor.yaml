@@ -1,0 +1,90 @@
+# Childhood flavor events (ages 0-9). Pure data: no options, no dice, no
+# branching — just a narrated beat and a small automatic effect. Effects
+# are declarative (a small list of stat/relationship/resource deltas) so
+# this file stays pure YAML with no embedded logic. contentLoader.ts turns
+# each entry into a FlavorEvent whose `effect` function applies these deltas.
+
+- id: flavor-harvest
+  minAge: 1
+  maxAge: 9
+  text: "The harvest comes in heavy this year. Your family eats well, and for once, nobody is counting coins at the table."
+  effects:
+    - { target: condition, stat: happiness, delta: 3 }
+
+- id: flavor-illness
+  minAge: 1
+  maxAge: 9
+  text: "A fever moves through the village. You're laid up in bed for a week, your mother never far from the door."
+  effects:
+    - { target: condition, stat: health, delta: -6 }
+    - { target: relationship, id: mother, delta: 4 }
+
+- id: flavor-traveler
+  minAge: 2
+  maxAge: 9
+  text: "A merchant caravan passes through, and for one afternoon the whole village smells like cinnamon and somewhere else."
+  effects:
+    - { target: condition, stat: happiness, delta: 2 }
+
+- id: flavor-sibling
+  minAge: 1
+  maxAge: 8
+  once: true
+  text: "Your parents are exhausted and thrilled in equal measure — there's a new baby in the house, and you're not the youngest anymore."
+  effects:
+    - { target: stat, stat: charisma, delta: 1 }
+
+- id: flavor-fight
+  minAge: 3
+  maxAge: 9
+  text: "You get into a scrap with another village kid over something that felt enormous at the time and is already forgotten."
+  effects:
+    - { target: stat, stat: strength, delta: 1 }
+    - { target: condition, stat: happiness, delta: -1 }
+
+- id: flavor-storyteller
+  minAge: 3
+  maxAge: 9
+  text: "An old woman in the village tells you stories by the fire — dragons, drowned kings, the usual. You believe every word."
+  effects:
+    - { target: stat, stat: intelligence, delta: 1 }
+
+- id: flavor-chores
+  minAge: 4
+  maxAge: 9
+  text: "You're old enough now to be given real chores. You resent it. You also get stronger for it."
+  effects:
+    - { target: stat, stat: strength, delta: 1 }
+
+- id: flavor-taxes
+  minAge: 2
+  maxAge: 9
+  text: "The lord's tax collector comes through. Your father's jaw is tight for days afterward."
+  effects:
+    - { target: gold, delta: -2 }
+    - { target: relationship, id: father, delta: -2 }
+
+- id: flavor-festival
+  minAge: 3
+  maxAge: 9
+  text: "The whole village turns out for the spring festival. You dance badly and don't care."
+  effects:
+    - { target: condition, stat: happiness, delta: 4 }
+    - { target: relationship, id: friend, delta: 3 }
+
+- id: flavor-storm
+  minAge: 1
+  maxAge: 9
+  text: "A bad storm tears through, taking part of the roof with it. Your family rebuilds it together, you included, whether you're much help or not."
+  effects:
+    - { target: gold, delta: -3 }
+    - { target: relationship, id: mother, delta: 2 }
+    - { target: relationship, id: father, delta: 2 }
+
+- id: flavor-omen
+  minAge: 5
+  maxAge: 9
+  text: "You see something in the woods at dusk that you can't explain and never quite mention to anyone. You think about it more than you let on."
+  effects:
+    - { target: stat, stat: intelligence, delta: 1 }
+    - { target: condition, stat: happiness, delta: -1 }
