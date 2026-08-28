@@ -44,12 +44,14 @@ export class Character {
 
   alive: boolean;
   causeOfDeath: string | null;
+  familyDescription: string;
 
   constructor(params: {
     name: string;
     stats: CoreStats;
     startingGold?: number;
     relationships?: Relationship[];
+    familyDescription?: string;
   }) {
     this.name = params.name;
     this.age = 0;
@@ -70,6 +72,7 @@ export class Character {
     this.flags = {};
     this.alive = true;
     this.causeOfDeath = null;
+    this.familyDescription = params.familyDescription ?? "";
   }
 
   get level(): number {
@@ -126,6 +129,15 @@ export class Character {
     return this.relationships.get(id);
   }
 
+  addRelationship(id: string, label: string, startingScore = 0): void {
+    if (this.relationships.has(id)) return;
+    this.relationships.set(id, new Relationship(id, label, startingScore));
+  }
+
+  hasRelationship(id: string): boolean {
+    return this.relationships.has(id);
+  }
+
   adjustRelationship(id: string, delta: number): void {
     const rel = this.relationships.get(id);
     if (rel) rel.adjust(delta);
@@ -165,6 +177,7 @@ export class Character {
     c.flags = { ...this.flags };
     c.alive = this.alive;
     c.causeOfDeath = this.causeOfDeath;
+    c.familyDescription = this.familyDescription;
     return c;
   }
 }

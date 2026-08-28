@@ -15,7 +15,9 @@ export const RECURRING_SOCIAL_EVENTS: GameEvent[] = [
         cost: { pool: "social", amount: 1 },
         resolve: (c) => {
           c.applyConditionChange("happiness", 6);
-          c.adjustRelationship("friend", 4);
+          if (c.hasRelationship("friend")) {
+            c.adjustRelationship("friend", 4);
+          }
           return { log: "A good night, plainly enjoyed." };
         },
       },
@@ -55,6 +57,7 @@ export const RECURRING_SOCIAL_EVENTS: GameEvent[] = [
     category: "recurring",
     minAge: 12,
     maxAge: 90,
+    requires: (c) => c.hasRelationship("friend"),
     text: "A friend asks a real favor of you — nothing dramatic, just time and effort you don't quite have to spare.",
     pool: "social",
     options: [
@@ -89,6 +92,10 @@ export const RECURRING_SOCIAL_EVENTS: GameEvent[] = [
         resolve: (c) => {
           const roll = rollAdvantage(c.stats.charisma);
           if (roll >= 7) {
+            if (!c.hasRelationship("friend")) {
+              c.addRelationship("friend", "Friend", 35);
+              return { log: "You talk until the light goes. You will be seeing more of them." };
+            }
             c.earnGold(10);
             return { log: "The conversation turns out to be worth more than you expected." };
           }
