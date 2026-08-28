@@ -45,8 +45,10 @@ src/
     shared/objects/             Character, Relationship, ResourcePool, PoolSet,
                                 CoreStats, ConditionStats, ClassName, InventoryItem
     characterEngine/
-      characterEngine.ts         createCharacter(template) — generic
-      objects/                    CharacterTemplate, StatRange, RelationshipSeed
+      characterEngine.ts         createCharacter(template) — rolls stats, household,
+                                family origin and starting gold
+      objects/                    CharacterTemplate, StatRange, RelationshipSeed,
+                                FamilyOrigin, Household, ParentOdds
     eventEngine/
       eventEngine.ts               eligibility filtering + yearly event selection,
                                   enforces the "events outnumber the pools" rule
@@ -66,6 +68,7 @@ src/
   content/                      fantasy-specific — swap this whole folder for a
                                 different game later
     objects/                     Item, ItemTemplate, ItemRarity,
+                                FamilyBackground, FamilyBackgroundTemplate,
                                 CharacterClass, CharacterClassTemplate,
                                 DungeonEncounter, DungeonEncounterTemplate,
                                 EffectTarget, RawFlavorEntry
@@ -78,17 +81,18 @@ src/
       scripted.ts                   one-off storyline arcs: wizard mentor,
                                   coming-of-age class choice, dungeon/ogre fight,
                                   love interest, dowry, family secret, etc.
-    classes.ts, items.ts, characterTemplate.ts
+    classes.ts, items.ts, characterTemplate.ts, familyBackgrounds.ts
     contentLoader.ts              parses flavor.yaml, assembles the EventRegistry
 
   state/
-    gameReducer.ts               AGE_UP / RESOLVE_OPTION / SKIP_EVENT / RESTART
-    objects/                     GameState, GameAction
+    gameReducer.ts               screen routing + AGE_UP / RESOLVE_OPTION / SKIP_EVENT
+    objects/                     GameState, GameAction, Screen
 
   ui/
     App.tsx                      wires gameReducer to the screen via useReducer
     components/                  StatBar, CarvedButton, EventCard, RelationshipPanel,
-                                Frame, HeroPortrait, Icon
+                                Frame, HeroPortrait, Icon, MainMenu, HowToPlay,
+                                CharacterPreview
     objects/                     IconName
     theme.ts                     colour tokens + CLASS_COLORS
     styles.css                   all layout/material/bevel styling (see UI section)
@@ -158,6 +162,54 @@ entirely opaque. The rules that direction implies:
 8. Layout stays a **single centred column**. A 16:9 sidebar layout was considered and
    rejected — see the minimap note under Known gaps.
 
+## Screens and the main menu
+
+`GameState.screen` drives which screen renders, via a `Screen` union of `menu`,
+`howToPlay`, `preview` and `playing`. `App.tsx` returns early for the first three and
+falls through to the play screen. `inProgress` is set once `BEGIN` fires and is what
+makes **Resume** appear in the menu — without it, opening the menu mid-life would strand
+the player with no way back.
+
+`NEW_GAME` rolls a character and lands on `preview` rather than starting play, so the
+Reroll button is simply the same action dispatched again. There is deliberately no
+separate `REROLL` action.
+
+The menu has **New Game** and **How to Play** only. **Continue** was considered and
+dropped because there is no save system (see gaps below) — do not add a Continue entry
+that silently starts a new game. **Credits** was also considered and declined; the
+game-icons.net CC BY 3.0 attribution currently lives only in the README, which satisfies
+the licence while the source ships with the build. If this is ever deployed as a
+standalone bundle without the repo, the attribution needs a home in the product.
+
+## Character generation and family origin
+
+`createCharacter` rolls four things beyond stats: which parents survive, how many
+siblings, which family background, and starting gold.
+
+- **Parents are not guaranteed.** `parentOdds` gives roughly 86% mother / 78% father,
+  rolled independently, so about 3% of characters are orphans. An absent parent means
+  **no relationship is seeded at all**, not a relationship at score zero. Anything reading
+  parent scores must tolerate the id being missing — `adjustRelationship` already no-ops
+  on unknown ids, and `relationshipScore` returns 0.
+- **Nobody is born with a friend.** A friend is acquired in play through `gs-stranger`.
+  `gs-friend-favor` is gated on `hasRelationship("friend")` and `gs-festival` guards its
+  friend bonus. If you add friend-dependent content, gate it the same way or it will
+  silently no-op for the whole childhood.
+- **Siblings** roll 0–4 uniformly and are seeded as real relationships with ids
+  `sibling-1..n`, so they appear in the Bonds panel automatically. Labels are drawn **with
+  replacement** — two elder brothers is legitimate. Do not reintroduce twin labels to the
+  pool: drawing without replacement previously produced characters with both a twin
+  brother and a twin sister.
+- **Family background** drives both the opening prose and the starting gold range (2 to
+  160, median around 11 — it is no longer a flat 10). Backgrounds live in
+  `content/familyBackgrounds.ts` and follow the factory pattern from hard rule 6. Prose
+  lives entirely in the content layer: the engine only calls `origin.describe(household)`,
+  so no English sentence is built inside `engine/`. A background may supply an
+  `orphanStation` variant used when both parents are absent.
+
+`RelationshipPanel` iterates `character.relationships` rather than hardcoding ids, which
+is what makes missing parents and variable siblings render correctly.
+
 ## Known gaps / explicit next steps
 
 - **No save/load system.** `Character` + `PoolSet` + `seenOnce` is the entire game state — persistence is just serializing that, but it hasn't been built.
@@ -175,10 +227,6 @@ entirely opaque. The rules that direction implies:
   decorative one before the locations system exists. This is also the point at which a
   16:9 sidebar layout becomes worth reconsidering — it was rejected for now specifically
   because a single centred column has nothing to put in a sidebar.
-
-- **`GameState` and `GameAction` live inside `state/gameReducer.ts`**, not in a
-  `state/objects/` folder. This contradicts hard rule 2 and the directory listing above.
-  Pre-existing; worth fixing when that file is next touched.
 
 - **`content/contentLoader.ts` contains `//` comments**, which hard rule 1 forbids.
   Pre-existing; strip them when next editing that file.
