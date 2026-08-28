@@ -75,7 +75,7 @@ src/
                                 different game later
     objects/                     Item, ItemTemplate, ItemRarity,
                                 FamilyBackground, FamilyBackgroundTemplate,
-                                (Item split into one file per entity)
+                                FamilyTrait, FamilyTraitTemplate
                                 CharacterClass, CharacterClassTemplate,
                                 DungeonEncounter, DungeonEncounterTemplate,
                                 EffectTarget, RawFlavorEntry
@@ -88,7 +88,8 @@ src/
       scripted.ts                   one-off storyline arcs: wizard mentor,
                                   coming-of-age class choice, dungeon/ogre fight,
                                   love interest, dowry, family secret, etc.
-    classes.ts, items.ts, characterTemplate.ts, familyBackgrounds.ts
+    classes.ts, items.ts, characterTemplate.ts, familyBackgrounds.ts,
+    familyTraits.ts
     contentLoader.ts              parses flavor.yaml, assembles the EventRegistry
 
   state/
@@ -99,7 +100,7 @@ src/
     App.tsx                      wires gameReducer to the screen via useReducer
     components/                  StatBar, CarvedButton, EventCard, RelationshipPanel,
                                 Frame, HeroPortrait, Icon, MainMenu, HowToPlay,
-                                CharacterPreview
+                                CharacterPreview, KinRow
     objects/                     IconName
     theme.ts                     colour tokens + CLASS_COLORS
     styles.css                   all layout/material/bevel styling (see UI section)
@@ -206,11 +207,23 @@ siblings, which family background, and starting gold.
   `gs-friend-favor` is gated on `hasRelationship("friend")` and `gs-festival` guards its
   friend bonus. If you add friend-dependent content, gate it the same way or it will
   silently no-op for the whole childhood.
-- **Siblings** roll 0–4 uniformly and are seeded as real relationships with ids
-  `sibling-1..n`, so they appear in the Bonds panel automatically. Labels are drawn **with
-  replacement** — two elder brothers is legitimate. Do not reintroduce twin labels to the
-  pool: drawing without replacement previously produced characters with both a twin
-  brother and a twin sister.
+- **Siblings** are weighted so large families are rare (mean 1.9, six at about 2%) and are
+  seeded as real relationships with ids `sibling-1..n`, so they appear in the Bonds panel
+  automatically. Gender is a coin flip and sets the label to Brother or Sister.
+- **Family members are people, not labels.** A `Relationship` carries a `name`, an
+  `ageOffset` and a list of trait ids. Age is stored as an **offset relative to the
+  character**, never as an absolute number, so `ageAt(character.age)` stays correct forever
+  and no yearly update is needed. Names are unique within a household.
+- **Every sibling present at birth is older than the character**, because the character is
+  age 0 when the household is rolled. `siblingAgeOffset` is 1–14. Do not add "Younger
+  Brother" style labels back: a younger sibling cannot exist yet, and showing ages makes
+  that immediately visible. Siblings born during childhood would need to be a flavour event
+  that calls `addRelationship`.
+- **Traits** come from `content/familyTraits.ts` and follow the factory pattern. They are
+  currently **flavour only** — nothing reads them mechanically — but `Relationship.hasTrait`
+  exists so events can gate on them without further engine work. Each trait carries an
+  `icon` string naming an entry in `IconName`; that is a presentational hint stored in
+  content and resolved in the UI.
 - **Family background** drives both the opening prose and the starting gold range (2 to
   160, median around 11 — it is no longer a flat 10). Backgrounds live in
   `content/familyBackgrounds.ts` and follow the factory pattern from hard rule 6. Prose

@@ -4,6 +4,7 @@ import type { RelationshipSeed } from "./RelationshipSeed";
 import type { FamilyOrigin } from "./FamilyOrigin";
 import type { ParentOdds } from "./ParentOdds";
 import type { WeightedCount } from "./WeightedCount";
+import type { PersonTrait } from "./PersonTrait";
 
 export interface CharacterTemplate {
   namePool: string[];
@@ -11,6 +12,13 @@ export interface CharacterTemplate {
   origins: FamilyOrigin[];
   parentOdds: ParentOdds;
   siblingCounts: WeightedCount[];
-  siblingLabels: string[];
+  femaleNames: string[];
+  maleNames: string[];
+  motherAgeOffset: StatRange;
+  fatherAgeOffset: StatRange;
+  siblingAgeOffset: StatRange;
+  traitPool: PersonTrait[];
+  traitsPerParent: WeightedCount[];
+  traitsPerSibling: WeightedCount[];
   startingRelationships: RelationshipSeed[];
 }

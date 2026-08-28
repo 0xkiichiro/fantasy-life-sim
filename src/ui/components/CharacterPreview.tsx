@@ -3,6 +3,7 @@ import { Frame } from "./Frame";
 import { CarvedButton } from "./CarvedButton";
 import { HeroPortrait } from "./HeroPortrait";
 import { StatBar } from "./StatBar";
+import { KinRow } from "./KinRow";
 import { COLORS } from "../theme";
 import type { Character } from "../../engine/shared/objects/Character";
 
@@ -55,18 +56,14 @@ export function CharacterPreview({
         <div className="preview-bonds">
           <div className="panel-title caps">Your Household</div>
           <p className="preview-family">{character.familyDescription}</p>
-          <div className="preview-bond-row">
+          <div className="kin-list">
             {parents.map((bond) => (
-              <span className="preview-bond" key={bond.id}>
-                {bond.label}
-              </span>
+              <KinRow kin={bond} characterAge={character.age} key={bond.id} />
             ))}
             {siblings.map((bond) => (
-              <span className="preview-bond sibling" key={bond.id}>
-                {bond.label}
-              </span>
+              <KinRow kin={bond} characterAge={character.age} key={bond.id} />
             ))}
-            {parents.length === 0 && <span className="preview-bond absent">No living parents</span>}
+            {parents.length === 0 && <div className="kin-absent">No living parents</div>}
           </div>
         </div>
       </Frame>

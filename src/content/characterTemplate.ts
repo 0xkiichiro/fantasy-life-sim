@@ -1,5 +1,6 @@
 import type { CharacterTemplate } from "../engine/characterEngine/objects/CharacterTemplate";
 import { FAMILY_BACKGROUNDS } from "./familyBackgrounds";
+import { FAMILY_TRAITS } from "./familyTraits";
 
 export const FANTASY_CHARACTER_TEMPLATE: CharacterTemplate = {
   namePool: ["Elenwyn", "Rodric", "Sabine", "Torvald", "Maren", "Cassian", "Ysolde", "Bram"],
@@ -20,7 +21,22 @@ export const FANTASY_CHARACTER_TEMPLATE: CharacterTemplate = {
     { count: 5, weight: 4 },
     { count: 6, weight: 2 },
   ],
-  siblingLabels: ["Elder Brother", "Elder Sister", "Younger Brother", "Younger Sister"],
+  femaleNames: ["Maren", "Ysolde", "Elenwyn", "Sabine", "Hedda", "Rowena", "Alys", "Grethe", "Isolde", "Nan"],
+  maleNames: ["Rodric", "Torvald", "Cassian", "Bram", "Aldric", "Gethin", "Osric", "Warin", "Emrys", "Hal"],
+  motherAgeOffset: { min: 17, max: 41 },
+  fatherAgeOffset: { min: 19, max: 49 },
+  siblingAgeOffset: { min: 1, max: 14 },
+  traitPool: FAMILY_TRAITS,
+  traitsPerParent: [
+    { count: 1, weight: 45 },
+    { count: 2, weight: 40 },
+    { count: 3, weight: 15 },
+  ],
+  traitsPerSibling: [
+    { count: 0, weight: 30 },
+    { count: 1, weight: 50 },
+    { count: 2, weight: 20 },
+  ],
   startingRelationships: [
     { id: "mother", label: "Mother", startingScore: 50 },
     { id: "father", label: "Father", startingScore: 50 },

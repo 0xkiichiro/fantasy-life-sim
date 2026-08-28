@@ -711,26 +711,7 @@ body {
   margin-top: 18px;
 }
 
-.preview-bond-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
 
-.preview-bond {
-  font-size: 13px;
-  color: #e8d6ae;
-  padding: 5px 12px;
-  background-color: #9c6f45;
-  background-image: url("/textures/oak.png");
-  background-size: 104px 104px;
-  background-blend-mode: multiply;
-  box-shadow:
-    inset 0 1px 0 #96703c,
-    inset 0 -1px 0 #1c1206,
-    0 0 0 1px var(--gold-dark);
-  text-shadow: 0 -1px 0 #1c1206;
-}
 
 .help-title {
   font-family: "Cinzel", serif;
@@ -819,12 +800,130 @@ body {
   color: var(--text);
 }
 
-.preview-bond.sibling {
-  background-color: #6f7f96;
+
+
+.kin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 }
 
-.preview-bond.absent {
-  background-color: #6b5340;
-  color: #b09a78;
+.kin {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 10px;
+  background-color: #9c6f45;
+  background-image: url("/textures/oak.png");
+  background-size: 104px 104px;
+  background-blend-mode: multiply;
+  box-shadow:
+    inset 0 1px 0 #96703c,
+    inset 0 -2px 0 #1c1206,
+    0 0 0 1px var(--gold-dark),
+    0 2px 0 var(--edge);
+}
+
+.kin-portrait {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  background-color: #6b4a2c;
+  background-image: url("/textures/oak.png");
+  background-size: 104px 104px;
+  background-blend-mode: multiply;
+  box-shadow: inset 0 0 7px #000, 0 0 0 2px var(--gold-dark), 0 0 0 3px var(--edge);
+}
+
+.kin-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.kin-name {
+  font-family: "Cinzel", serif;
+  font-size: 14px;
+  color: #f0dcb2;
+  text-shadow: 0 -1px 0 #1c1206;
+}
+
+.kin-rel {
+  font-size: 12px;
+  color: #c0a87e;
+  text-shadow: 0 -1px 0 #1c1206;
+}
+
+.kin-traits {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.kin-absent {
+  padding: 8px 10px;
   font-style: italic;
+  font-size: 13px;
+  color: #b09a78;
+  background-color: #6b5340;
+  box-shadow: inset 0 0 0 1px var(--gold-dark);
+}
+
+.trait {
+  position: relative;
+  display: inline-flex;
+  color: var(--gold-bright);
+  cursor: help;
+  outline: none;
+}
+
+.trait-tip {
+  position: absolute;
+  bottom: calc(100% + 9px);
+  right: -6px;
+  z-index: 20;
+  width: 214px;
+  padding: 9px 11px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-style: normal;
+  color: var(--ink);
+  background-color: #d9cbaa;
+  background-image: url("/textures/parchment.png");
+  background-size: 168px 168px;
+  background-blend-mode: multiply;
+  box-shadow:
+    inset 0 0 0 1px #6b5837,
+    0 0 0 1px var(--edge),
+    0 6px 14px #000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.1s ease;
+  pointer-events: none;
+}
+
+.trait-tip b {
+  display: block;
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: #4a3818;
+  margin-bottom: 3px;
+}
+
+.trait-tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 11px;
+  border: 6px solid transparent;
+  border-top-color: #6b5837;
+}
+
+.trait:hover .trait-tip,
+.trait:focus .trait-tip {
+  opacity: 1;
+  visibility: visible;
 }

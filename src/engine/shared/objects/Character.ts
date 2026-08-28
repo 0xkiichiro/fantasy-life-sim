@@ -129,9 +129,9 @@ export class Character {
     return this.relationships.get(id);
   }
 
-  addRelationship(id: string, label: string, startingScore = 0): void {
+  addRelationship(id: string, label: string, startingScore = 0, name = ""): void {
     if (this.relationships.has(id)) return;
-    this.relationships.set(id, new Relationship(id, label, startingScore));
+    this.relationships.set(id, new Relationship({ id, label, score: startingScore, name }));
   }
 
   hasRelationship(id: string): boolean {

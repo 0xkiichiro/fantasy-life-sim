@@ -39,7 +39,13 @@ export function RelationshipPanel({ character }: { character: Character }) {
             <div className="rel-portrait" />
             <div className="rel-body">
               <StatBar
-                label={bond.id === "love" && married ? "Spouse" : bond.label}
+                label={
+                  bond.id === "love" && married
+                    ? "Spouse"
+                    : bond.name
+                      ? `${bond.name} (${bond.label})`
+                      : bond.label
+                }
                 value={bond.score}
                 color={bondColor(bond.id)}
               />
