@@ -1,12 +1,5 @@
 import { Relationship } from "./Relationship";
 
-/**
- * The engine only needs to know an inventory entry has a name it can
- * check against (see hasItem). It deliberately does NOT import the
- * content-layer Item class here — engine must not depend on content,
- * only the reverse. content's Item class structurally satisfies this
- * interface, so passing an Item into addItem() just works.
- */
 export interface InventoryItem {
   name: string;
 }
@@ -28,19 +21,12 @@ export interface ConditionStats {
   renown: number;
 }
 
-/** Proficiency → level thresholds. Index i means "reach level i+1 at this proficiency". */
 export const LEVEL_THRESHOLDS = [0, 10, 25, 50, 90, 140, 200, 280];
 
 function clamp(v: number, min = 0, max = 100): number {
   return Math.max(min, Math.min(max, v));
 }
 
-/**
- * Character — the central entity of the simulation. A real class with
- * behavior: other objects (events, the engines) call its methods rather
- * than mutating its fields directly, so invariants (gold can't go
- * negative, stats stay in range) are enforced in one place.
- */
 export class Character {
   name: string;
   age: number;
@@ -86,8 +72,6 @@ export class Character {
     this.causeOfDeath = null;
   }
 
-  // ---- derived ----
-
   get level(): number {
     let lvl = 1;
     for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
@@ -95,8 +79,6 @@ export class Character {
     }
     return lvl;
   }
-
-  // ---- stats ----
 
   applyStatChange(stat: CoreStatName, delta: number): void {
     this.stats[stat] = clamp(this.stats[stat] + delta);
@@ -110,13 +92,10 @@ export class Character {
     this.applyConditionChange("health", delta);
   }
 
-  // ---- resources ----
-
   earnGold(amount: number): void {
     this.gold += amount;
   }
 
-  /** Returns false (and spends nothing) if the character can't afford it. */
   spendGold(amount: number): boolean {
     if (this.gold < amount) return false;
     this.gold -= amount;
@@ -131,13 +110,9 @@ export class Character {
     this.proficiency += amount;
   }
 
-  // ---- class ----
-
   assignClass(className: ClassName): void {
     this.className = className;
   }
-
-  // ---- items ----
 
   addItem(item: InventoryItem): void {
     this.items.push(item);
@@ -146,8 +121,6 @@ export class Character {
   hasItem(name: string): boolean {
     return this.items.some((i) => i.name === name);
   }
-
-  // ---- relationships ----
 
   getRelationship(id: string): Relationship | undefined {
     return this.relationships.get(id);
@@ -162,8 +135,6 @@ export class Character {
     return this.relationships.get(id)?.score ?? 0;
   }
 
-  // ---- flags ----
-
   setFlag(key: string, value: unknown): void {
     this.flags[key] = value;
   }
@@ -172,14 +143,11 @@ export class Character {
     return this.flags[key] as T | undefined;
   }
 
-  // ---- lifecycle ----
-
   die(cause: string): void {
     this.alive = false;
     this.causeOfDeath = cause;
   }
 
-  /** Deep clone — used so engines can produce a new immutable-ish snapshot per turn. */
   clone(): Character {
     const c = new Character({
       name: this.name,

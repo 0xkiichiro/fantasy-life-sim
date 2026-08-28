@@ -1,11 +1,5 @@
 import type { CharacterTemplate } from "../engine/characterEngine/objects/CharacterTemplate";
 
-/**
- * The fantasy game's concrete character template — the actual values the
- * generic characterEngine needs. A second game (different setting,
- * different relationships) would supply its own template of this same
- * shape rather than touching the engine.
- */
 export const FANTASY_CHARACTER_TEMPLATE: CharacterTemplate = {
   namePool: ["Elenwyn", "Rodric", "Sabine", "Torvald", "Maren", "Cassian", "Ysolde", "Bram"],
   statRanges: {

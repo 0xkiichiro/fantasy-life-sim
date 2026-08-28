@@ -1,21 +1,11 @@
 import type { CoreStatName } from "../../engine/shared/objects/Character";
 
-/**
- * DungeonEncounter — formalized now even though there's no standalone
- * dungeon-crawling system yet (v1 resolves dungeons narratively, inline
- * in scripted events). Having the template exist means the next dungeon
- * doesn't have to be hardcoded prose the way "ogre-kin" is in v1 — it can
- * be spun up from a template and dropped into an event's resolve().
- *
- * Deliberately minimal: extend this once an actual dungeon system exists
- * rather than speculatively building fields nothing reads yet.
- */
 export interface DungeonEncounterTemplate {
   name: string;
   minLevel: number;
   monster: string;
   checkStat: CoreStatName;
-  difficulty: number; // roll target on the advantage dice check
+  difficulty: number;
   goldReward: [min: number, max: number];
   proficiencyReward: number;
   deathChanceOnFailure: number;

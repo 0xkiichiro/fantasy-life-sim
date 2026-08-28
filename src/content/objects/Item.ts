@@ -2,7 +2,6 @@ import type { CoreStatName } from "../../engine/shared/objects/Character";
 
 export type ItemRarity = "common" | "rare" | "legendary";
 
-/** The declarative shape a content author writes — no behavior, just data. */
 export interface ItemTemplate {
   name: string;
   statBonus?: Partial<Record<CoreStatName, number>>;
@@ -11,12 +10,6 @@ export interface ItemTemplate {
   description?: string;
 }
 
-/**
- * Item — a templated object. Content defines ItemTemplate values (see
- * content/items.ts); Item.fromTemplate() spins up the actual instance a
- * Character holds. Multiple items can share a template shape without
- * being the same object.
- */
 export class Item {
   readonly name: string;
   readonly statBonus: Partial<Record<CoreStatName, number>>;

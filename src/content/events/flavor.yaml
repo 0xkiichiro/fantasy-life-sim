@@ -1,9 +1,3 @@
-# Childhood flavor events (ages 0-9). Pure data: no options, no dice, no
-# branching — just a narrated beat and a small automatic effect. Effects
-# are declarative (a small list of stat/relationship/resource deltas) so
-# this file stays pure YAML with no embedded logic. contentLoader.ts turns
-# each entry into a FlavorEvent whose `effect` function applies these deltas.
-
 - id: flavor-harvest
   minAge: 1
   maxAge: 9

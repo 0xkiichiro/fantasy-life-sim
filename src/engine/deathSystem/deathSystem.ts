@@ -1,17 +1,6 @@
 import type { Character } from "../shared/objects/Character";
 import type { EventResult } from "../eventEngine/objects/EventResult";
 
-/**
- * deathSystem — the only place death actually gets decided. Two paths:
- *  1. Old-age mortality, rolled once per age-up past 55, ramping with age.
- *  2. Risk-driven death, rolled when an EventResult carries a deathChance
- *     (e.g. losing a fight in a dungeon).
- *
- * Centralizing this is what makes the v2 "death legacy" stretch goal
- * (write a book / hide a sword / send a letter, seeding a future
- * playthrough) a single extension point later rather than a scattered one.
- */
-
 const OLD_AGE_START = 55;
 const OLD_AGE_RAMP_PER_YEAR = 0.012;
 const OLD_AGE_CAP = 0.5;
@@ -30,7 +19,6 @@ export function applyOldAgeDeathIfDue(character: Character): boolean {
   return false;
 }
 
-/** Applies a resolved event's health delta and rolls its death chance, if any. */
 export function applyEventResult(character: Character, result: EventResult): void {
   if (result.health) {
     character.applyHealthChange(result.health);

@@ -6,8 +6,6 @@ import { SCRIPTED_EVENTS } from "./events/scripted";
 import { RECURRING_SOCIAL_EVENTS } from "./events/recurring-social";
 import { RECURRING_PROFICIENCY_EVENTS } from "./events/recurring-proficiency";
 
-// Vite raw-import for the YAML source (typed via src/vite-env.d.ts).
-// Adjust the import mechanism if the build tool differs.
 import flavorYamlSource from "./events/flavor.yaml?raw";
 
 type EffectTarget =
@@ -56,11 +54,6 @@ function buildFlavorEvent(raw: RawFlavorEntry): FlavorEvent {
   };
 }
 
-/**
- * Validates and normalizes the raw YAML into FlavorEvent[]. Fails loudly
- * (throws) on a malformed entry rather than silently dropping it, per the
- * design decision to validate content at load time.
- */
 export function loadFlavorEvents(yamlSource: string): FlavorEvent[] {
   const parsed = yaml.load(yamlSource);
   if (!Array.isArray(parsed)) {
@@ -75,7 +68,6 @@ export function loadFlavorEvents(yamlSource: string): FlavorEvent[] {
   });
 }
 
-/** Assembles the full EventRegistry the eventEngine consumes, from both YAML and TS sources. */
 export function loadEventRegistry(): EventRegistry {
   return {
     flavor: loadFlavorEvents(flavorYamlSource),

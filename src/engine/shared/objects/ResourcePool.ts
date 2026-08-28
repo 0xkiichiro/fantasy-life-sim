@@ -1,11 +1,3 @@
-/**
- * ResourcePool — tracks the action points available for a single category
- * (e.g. "social" or "proficiency") during the current year.
- *
- * Owned by /engine/poolManager, but the *shape* is shared: the event engine
- * needs to read it, options need to spend against it, so it lives in
- * engine/shared rather than nested under poolManager alone.
- */
 export type PoolCategory = "social" | "proficiency";
 
 export class ResourcePool {
@@ -23,7 +15,6 @@ export class ResourcePool {
     return this.current >= amount;
   }
 
-  /** Returns true if the spend succeeded. Never goes negative. */
   spend(amount: number): boolean {
     if (!this.canAfford(amount)) return false;
     this.current -= amount;
@@ -42,7 +33,6 @@ export class ResourcePool {
   }
 }
 
-/** Convenience container for the full set of pools a character has in a year. */
 export class PoolSet {
   social: ResourcePool;
   proficiency: ResourcePool;

@@ -1,12 +1,6 @@
 import type { GameEvent } from "../../engine/eventEngine/objects/GameEvent";
 import { rollAdvantage } from "../../engine/diceEngine/diceEngine";
 
-/**
- * Recurring social events. Not `once` — these can come up repeatedly
- * across a playthrough. Every year, the event engine randomly draws a
- * couple of these (see eventEngine.ts) to compete against the scripted
- * arc events for the same social pool points.
- */
 export const RECURRING_SOCIAL_EVENTS: GameEvent[] = [
   {
     id: "gs-festival",
