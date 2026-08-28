@@ -1,27 +1,24 @@
 import type { CoreStats } from "../../shared/objects/Character";
-
-/**
- * CharacterTemplate — the generic *shape* the character engine needs to
- * build a character: a name pool, a stat range to roll within, starting
- * gold, and a list of starting relationships. The actual fantasy-specific
- * values (which names, which relationships exist) live in
- * content/characterTemplate.ts, not here — this file just describes what
- * a template must provide.
- */
-export interface StatRange {
-  min: number;
-  max: number;
-}
-
-export interface RelationshipSeed {
-  id: string;
-  label: string;
-  startingScore: number;
-}
+import type { StatRange } from "./StatRange";
+import type { RelationshipSeed } from "./RelationshipSeed";
+import type { FamilyOrigin } from "./FamilyOrigin";
+import type { ParentOdds } from "./ParentOdds";
+import type { WeightedCount } from "./WeightedCount";
+import type { PersonTrait } from "./PersonTrait";
 
 export interface CharacterTemplate {
   namePool: string[];
   statRanges: Record<keyof CoreStats, StatRange>;
-  startingGold: number;
+  origins: FamilyOrigin[];
+  parentOdds: ParentOdds;
+  siblingCounts: WeightedCount[];
+  femaleNames: string[];
+  maleNames: string[];
+  motherAgeOffset: StatRange;
+  fatherAgeOffset: StatRange;
+  siblingAgeOffset: StatRange;
+  traitPool: PersonTrait[];
+  traitsPerParent: WeightedCount[];
+  traitsPerSibling: WeightedCount[];
   startingRelationships: RelationshipSeed[];
 }

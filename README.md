@@ -108,10 +108,27 @@ npm run dev        # Vite dev server
 npm run typecheck  # tsc --noEmit
 ```
 
-Note: dependencies could not be installed or typechecked in the sandbox
-this was built in (registry access was blocked there) — review the code
-directly, and run `npm install && npm run typecheck` locally to confirm
-before treating it as fully verified.
+Or with Docker, without a local Node install:
+
+```
+make run           # Vite dev server in a container, on :5173
+make run-prod      # production build served by nginx, on :8080
+make typecheck     # tsc && vite build inside the image
+```
+
+## Credits
+
+UI icons are from [game-icons.net](https://game-icons.net), used under
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The individual
+icons vendored into `src/ui/components/Icon.tsx` are by:
+
+- **Lorc** — broadsword, pointy hat, hood, scroll unfurled
+- **Willdabeast** — round shield
+- **Sbed** — death skull
+- **Delapouite** — three friends
+
+Material textures (oak, stone, leather, parchment) are generated
+procedurally by `tools/generate-textures.py` and are not third-party assets.
 
 ## Known gaps / next steps
 

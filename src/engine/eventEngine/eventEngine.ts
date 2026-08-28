@@ -27,21 +27,14 @@ export interface EventRegistry {
 }
 
 export interface YearContent {
-  /** Set for childhood years (age < 10): a single narrated flavor beat, no choices. */
+
   flavorEvent: FlavorEvent | null;
-  /** Set for age >= 10: the queue of decision events to present this year. */
+
   events: GameEvent[];
 }
 
 const RECURRING_DRAWS_PER_POOL = 2;
 
-/**
- * eventEngine — decides what shows up in a given year. This is where the
- * "events should outnumber what the pools can afford" design rule is
- * actually enforced: every eligible scripted/arc event surfaces, plus a
- * random draw of recurring events per pool, deliberately more than a
- * typical pool (2-4 points) can fully cover.
- */
 export function selectYearContent(
   character: Character,
   registry: EventRegistry,

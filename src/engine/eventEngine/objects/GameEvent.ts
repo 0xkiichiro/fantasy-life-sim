@@ -9,14 +9,14 @@ export interface GameEvent {
   category: EventCategory;
   minAge: number;
   maxAge: number;
-  /** If true, this event can only ever fire once per playthrough. */
+
   once?: boolean;
-  /** Eligibility gate beyond age range — e.g. "only if mentorArc is active". */
+
   requires?: (c: Character) => boolean;
   text: string;
-  /** Which pool this event draws from when presenting options. Null for flavor/no-cost events. */
+
   pool: PoolCategory | null;
-  /** Static list, or a function so options can depend on class/items (e.g. the ogre fight). */
+
   options: EventOption[] | ((c: Character) => EventOption[]);
 }
 

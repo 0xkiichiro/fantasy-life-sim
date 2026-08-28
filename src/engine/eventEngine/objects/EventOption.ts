@@ -10,7 +10,7 @@ export interface EventCost {
 export interface EventOption {
   label: string;
   cost?: EventCost;
-  /** Optional extra gating beyond affordability, e.g. "requires 50 gold". */
+
   requires?: (c: Character) => boolean;
   resolve: (c: Character) => EventResult;
 }

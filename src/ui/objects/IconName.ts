@@ -1,0 +1,1 @@
+export type IconName = "broadsword" | "pointyHat" | "hood" | "roundShield" | "scrollUnfurled" | "deathSkull" | "threeFriends" | "shiningHeart" | "angryEyes" | "tiredEye" | "prayer" | "beerStein" | "brain" | "crystalBall" | "hammerNails" | "swordWound" | "bookCover" | "huntingHorn" | "sewingNeedle";

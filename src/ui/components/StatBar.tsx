@@ -1,5 +1,5 @@
 import React from "react";
-import { COLORS, clamp } from "../theme";
+import { clamp } from "../theme";
 
 export function StatBar({
   label,
@@ -13,35 +13,19 @@ export function StatBar({
   color: string;
 }) {
   return (
-    <div style={{ marginBottom: 6 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: 11,
-          color: COLORS.ink,
-          opacity: 0.8,
-        }}
-      >
+    <div className="stat">
+      <div className="stat-row">
         <span>{label}</span>
-        <span>{Math.round(value)}</span>
+        <b>{Math.round(value)}</b>
       </div>
-      <div
-        style={{
-          height: 7,
-          background: "#00000022",
-          borderRadius: 2,
-          overflow: "hidden",
-          border: `1px solid ${COLORS.leather}55`,
-        }}
-      >
+      <div className="track">
         <div
+          className="fill"
           style={{
             width: `${clamp((value / max) * 100)}%`,
-            height: "100%",
-            background: color,
-            transition: "width 0.4s ease",
+            backgroundColor: color,
+            backgroundImage:
+              "linear-gradient(180deg, rgba(255,246,221,0.45), rgba(255,246,221,0.05) 45%, rgba(0,0,0,0.5))",
           }}
         />
       </div>

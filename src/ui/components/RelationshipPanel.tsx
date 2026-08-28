@@ -1,42 +1,58 @@
 import React from "react";
-import { Users } from "lucide-react";
+import { Icon } from "./Icon";
 import { COLORS } from "../theme";
 import { StatBar } from "./StatBar";
+import { Frame } from "./Frame";
 import type { Character } from "../../engine/shared/objects/Character";
+
+const BOND_COLORS: Record<string, string> = {
+  mother: COLORS.moss,
+  father: COLORS.moss,
+  friend: COLORS.gold,
+  love: COLORS.oxblood,
+};
+
+function bondColor(id: string): string {
+  if (BOND_COLORS[id]) return BOND_COLORS[id];
+  if (id.startsWith("sibling-")) return COLORS.steel;
+  return COLORS.gold;
+}
 
 export function RelationshipPanel({ character }: { character: Character }) {
   const loveMet = !!character.getFlag("loveMet");
   const married = !!character.getFlag("married");
 
+  const bonds = Array.from(character.relationships.values()).filter(
+    (bond) => bond.id !== "love" || loveMet
+  );
+
+  if (bonds.length === 0) return null;
+
   return (
-    <div style={{ background: "#ffffff44", border: `1px solid ${COLORS.leather}33`, borderRadius: 4, padding: 14, marginTop: 14 }}>
-      <div
-        style={{
-          fontFamily: "'Cinzel', serif",
-          fontSize: 11,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: COLORS.leather,
-          marginBottom: 8,
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-        }}
-      >
-        <Users size={13} /> Relationships
+    <Frame className="mt">
+      <div className="panel-title caps">
+        <Icon name="threeFriends" size={18} /> Bonds
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "4px 20px" }}>
-        <StatBar label="Mother" value={character.relationshipScore("mother")} color={COLORS.moss} />
-        <StatBar label="Father" value={character.relationshipScore("father")} color={COLORS.moss} />
-        <StatBar label="Friend" value={character.relationshipScore("friend")} color={COLORS.gold} />
-        {loveMet && (
-          <StatBar
-            label={married ? "Spouse" : "Love Interest"}
-            value={character.relationshipScore("love")}
-            color={COLORS.oxblood}
-          />
-        )}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0 20px" }}>
+        {bonds.map((bond) => (
+          <div className="rel" key={bond.id}>
+            <div className="rel-portrait" />
+            <div className="rel-body">
+              <StatBar
+                label={
+                  bond.id === "love" && married
+                    ? "Spouse"
+                    : bond.name
+                      ? `${bond.name} (${bond.label})`
+                      : bond.label
+                }
+                value={bond.score}
+                color={bondColor(bond.id)}
+              />
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </Frame>
   );
 }
